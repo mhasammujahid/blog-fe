@@ -32,8 +32,8 @@ To get started with the project, follow these steps:
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/your-username/blog-manager-frontend.git
-    cd blog-manager-frontend
+    git clone https://github.com/mhasammujahid/blog-fe.git
+    cd blog-manager
     ```
 
 2. Install the dependencies:
