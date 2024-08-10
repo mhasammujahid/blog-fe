@@ -15,9 +15,6 @@ const Create = () => {
   const handleSubmit = (event) => {
     setLoading(true);
     event.preventDefault();
-    console.log(username);
-    console.log(email);
-    console.log(password);
     // const body = { username: username, email: email, password: password };
     // const onSuccess = () => {};
     // const onFailure = () => {};
