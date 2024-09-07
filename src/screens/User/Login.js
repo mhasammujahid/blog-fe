@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import { createUser } from "../../services/actions/users/users";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
-const Create = () => {
+const Login = () => {
   const dispatch = useDispatch();
 
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,47 +13,38 @@ const Create = () => {
   const [error, setError] = useState("");
 
   const handleSubmit = (event) => {
-    setLoading(true);
     event.preventDefault();
-    const body = { username: username, email: email, password: password };
-    const onSuccess = (res) => {
-      console.log(res);
-    };
-    const onFailure = (err) => {
-      console.log(err);
-    };
-    dispatch(createUser(body, onSuccess, onFailure));
+    setLoading(true);
+
+    startTransition(() => {
+      const body = { email, password }; // Adjust the body as needed
+
+      const onSuccess = () => {
+        setLoading(false);
+        // Redirect or handle success
+      };
+
+      const onFailure = (error) => {
+        setLoading(false);
+        setError(error.message || "An error occurred");
+      };
+
+      dispatch(createUser(body, onSuccess, onFailure));
+    });
   };
 
   return (
     <>
-      {/* {loading && (
+      {loading && (
         <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
           <div className="spinner-grow text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
         </div>
-      )} */}
+      )}
       <div className="bg-light vh-100 d-flex align-items-center justify-content-center">
         <div className="bg-white p-4 rounded">
-          <form
-            onSubmit={(e) => {
-              handleSubmit(e);
-            }}
-          >
-            <div className="form-group">
-              <label htmlFor="exampleInputEmail1">Username</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter username"
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                }}
-                disabled={loading ? true : false}
-                required
-              />
-            </div>
+          <form onSubmit={handleSubmit}>
             <div className="form-group mt-3">
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input
@@ -62,15 +53,10 @@ const Create = () => {
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Enter email"
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                disabled={loading ? true : false}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
                 required
               />
-              <small id="emailHelp" className="form-text text-muted">
-                We'll never share your email with anyone else.
-              </small>
             </div>
             <div className="form-group mt-3">
               <label htmlFor="exampleInputPassword1">Password</label>
@@ -79,19 +65,13 @@ const Create = () => {
                 className="form-control"
                 id="exampleInputPassword1"
                 placeholder="Password"
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                disabled={loading ? true : false}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
                 required
               />
             </div>
             {loading ? (
-              <button
-                className="btn btn-primary btn btn-primary mt-3"
-                type="button"
-                disabled
-              >
+              <button className="btn btn-primary mt-3" type="button" disabled>
                 <span
                   className="spinner-grow spinner-grow-sm"
                   role="status"
@@ -101,14 +81,17 @@ const Create = () => {
               </button>
             ) : (
               <button type="submit" className="btn btn-primary mt-3">
-                Submit
+                Login
               </button>
             )}
           </form>
+          <Link className="mt-3 text-decoration-none" to={"/user/create"}>
+            Sign up
+          </Link>
         </div>
       </div>
     </>
   );
 };
 
-export default Create;
+export default Login;
